@@ -1,0 +1,67 @@
+const I18N = {
+  ja: {
+    appName: 'タイムブリッジ',
+    headerPlaceholder: '以下の日程でご都合いかがでしょうか。',
+    days: ['月', '火', '水', '木', '金', '土', '日'],
+    daysLong: ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'],
+    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+    slotAM: '午前',
+    slotPM: '午後',
+    slotAllDay: '終日',
+    slotCustom: '+ カスタム',
+    timezonesTitle: 'タイムゾーン',
+    addMore: '+ その他',
+    copyBtn: 'コピーする',
+    copiedBtn: 'コピーしました ✓',
+    resetBtn: 'リセット',
+    noSlots: '日付を選択してください',
+    outputEmpty: '日付とスロットを選択するとここに表示されます',
+    fromLabel: '開始',
+    toLabel: '終了',
+    langToggle: 'EN',
+    dateFormat: (y, m, d, dow) => `${m}月${d}日（${dow}）`,
+    dateFmtShort: (m, d) => `${m}月${d}日`,
+    selectedDates: '選択した日程',
+    slotSettingsTitle: '時間帯のデフォルト設定',
+    slotSettingsHint: 'クリックして時間を変更',
+    headerLabel: '冒頭文',
+    headerHint: '編集できます',
+  },
+  en: {
+    appName: 'TimeBridge',
+    headerPlaceholder: 'Would any of the following schedule work for you?',
+    days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    daysLong: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    slotAM: 'Morning',
+    slotPM: 'Afternoon',
+    slotAllDay: 'All Day',
+    slotCustom: '+ Custom',
+    timezonesTitle: 'Timezones',
+    addMore: '+ More',
+    copyBtn: 'Copy',
+    copiedBtn: 'Copied! ✓',
+    resetBtn: 'Reset',
+    noSlots: 'Select a date to get started',
+    outputEmpty: 'Select dates and slots to generate your message',
+    fromLabel: 'From',
+    toLabel: 'To',
+    langToggle: 'JA',
+    dateFormat: (y, m, d, dow) => `${MONTHS_EN_SHORT[m - 1]} ${d}${ordinal(d)} (${dow})`,
+    dateFmtShort: (m, d) => `${MONTHS_EN_SHORT[m - 1]} ${d}`,
+    selectedDates: 'Selected dates',
+    slotSettingsTitle: 'Default time ranges',
+    slotSettingsHint: 'Click to customize',
+    headerLabel: 'Opening message',
+    headerHint: 'Editable',
+  }
+};
+
+const MONTHS_EN_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function ordinal(n) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
+}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TimeBridge / タイムブリッジ</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="app-header__inner">
+      <div class="app-header__brand">
+        <span class="app-header__icon">🌉</span>
+        <span class="app-header__name" id="appName">タイムブリッジ</span>
+      </div>
+      <button class="lang-toggle" id="langToggle" aria-label="Switch language">EN</button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="app-main">
+
+    <!-- LEFT PANEL -->
+    <section class="panel panel--left">
+
+      <!-- Calendar -->
+      <div class="calendar">
+        <div class="calendar__nav">
+          <button class="calendar__nav-btn" id="prevMonth" aria-label="Previous month">&#8249;</button>
+          <span class="calendar__title" id="calendarTitle"></span>
+          <button class="calendar__nav-btn" id="nextMonth" aria-label="Next month">&#8250;</button>
+        </div>
+        <div class="calendar__grid" id="calendarGrid"></div>
+      </div>
+
+      <!-- Selected Dates & Slots -->
+      <div class="slots-section" id="slotsSection">
+        <div class="slots-section__empty" id="slotsEmpty"></div>
+        <div class="slots-list" id="slotsList"></div>
+      </div>
+
+      <!-- Slot Settings -->
+      <div class="slot-settings" id="slotSettings">
+        <button class="slot-settings__toggle" id="slotSettingsToggle" aria-expanded="false">
+          <span id="slotSettingsTitle">時間帯のデフォルト設定</span>
+          <span class="slot-settings__arrow">▾</span>
+        </button>
+        <div class="slot-settings__body" id="slotSettingsBody" hidden>
+          <div class="slot-settings__row" id="settingsAM"></div>
+          <div class="slot-settings__row" id="settingsPM"></div>
+          <div class="slot-settings__row" id="settingsAllDay"></div>
+        </div>
+      </div>
+
+      <!-- Timezone Panel -->
+      <div class="tz-panel">
+        <div class="tz-panel__title" id="tzTitle">タイムゾーン</div>
+        <div class="tz-active" id="tzActive"></div>
+        <div class="tz-presets" id="tzPresets"></div>
+        <div class="tz-more">
+          <select class="tz-more__select" id="tzMoreSelect">
+            <option value="" id="tzMorePlaceholder">+ その他</option>
+          </select>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT PANEL -->
+    <section class="panel panel--right">
+
+      <!-- Header message -->
+      <div class="output-header">
+        <div class="output-header__label">
+          <span id="headerLabel">冒頭文</span>
+          <span class="output-header__hint" id="headerHint">クリックして編集できます</span>
+        </div>
+        <textarea
+          class="output-header__input"
+          id="headerMessage"
+          rows="2"
+          placeholder="以下の日程でご都合いかがでしょうか。"
+        ></textarea>
+      </div>
+
+      <!-- Output message -->
+      <div class="output-body" id="outputBody">
+        <div class="output-body__empty" id="outputEmpty"></div>
+        <pre class="output-body__text" id="outputText"></pre>
+      </div>
+
+      <!-- Actions -->
+      <div class="output-actions">
+        <button class="btn btn--primary" id="copyBtn">コピーする</button>
+        <button class="btn btn--ghost" id="resetBtn">リセット</button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="i18n.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
