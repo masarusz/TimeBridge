@@ -54,6 +54,28 @@ const TZ_EXTRA = [
   { key: 'taiwan',            label: 'Taiwan',              iana: 'Asia/Taipei'         },
 ];
 
+// English translations for Japanese public holiday names
+const HOLIDAY_NAMES_EN = {
+  '元日':         "New Year's Day",
+  '成人の日':     'Coming of Age Day',
+  '建国記念の日': 'National Foundation Day',
+  '天皇誕生日':   "Emperor's Birthday",
+  '春分の日':     'Vernal Equinox Day',
+  '昭和の日':     'Showa Day',
+  '憲法記念日':   'Constitution Memorial Day',
+  'みどりの日':   'Greenery Day',
+  'こどもの日':   "Children's Day",
+  '海の日':       'Marine Day',
+  '山の日':       'Mountain Day',
+  '敬老の日':     'Respect for the Aged Day',
+  '秋分の日':     'Autumnal Equinox Day',
+  'スポーツの日': 'Sports Day',
+  '体育の日':     'Sports Day',
+  '文化の日':     'Culture Day',
+  '勤労感謝の日': 'Labour Thanksgiving Day',
+  '振替休日':     'Public Holiday',
+};
+
 // Slot definitions
 const SLOT_AM      = 'am';
 const SLOT_PM      = 'pm';
@@ -82,6 +104,10 @@ let state = {
     ja: I18N.ja.headerPlaceholder,
     en: I18N.en.headerPlaceholder,
   },
+  // Japanese holidays: { 'YYYY-MM-DD': '祝日名' }
+  holidays: {},
+  // Years for which a fetch has been attempted (avoid duplicate requests)
+  holidayYearsFetched: new Set(),
   // Customisable default time ranges for preset slots
   slotTimes: {
     am:     { start: '10:00', end: '12:00' },
@@ -432,6 +458,7 @@ function renderI18n() {
     state.lang === 'ja' ? 'タイムブリッジ' : 'TimeBridge';
   document.documentElement.lang = state.lang === 'ja' ? 'ja' : 'en';
   document.getElementById('langToggle').textContent = t('langToggle');
+  document.getElementById('todayBtn').textContent = t('todayBtn');
   document.getElementById('tzTitle').textContent = t('timezonesTitle');
   document.getElementById('copyBtn').textContent = t('copyBtn');
   document.getElementById('resetBtn').textContent = t('resetBtn');
@@ -449,6 +476,11 @@ function renderI18n() {
 function renderCalendar() {
   const { year: y, month: m } = state;
   const lang = state.lang;
+
+  // Disable "Today" button when already on the current month
+  const now = new Date();
+  const isCurrentMonth = y === now.getFullYear() && m === now.getMonth();
+  document.getElementById('todayBtn').disabled = isCurrentMonth;
 
   // Title
   const titleEl = document.getElementById('calendarTitle');
@@ -489,17 +521,24 @@ function renderCalendar() {
     const today = isToday(y, m, d);
     const selected = state.selectedDates.has(key);
 
+    const holidayNameJa = state.holidays[key];
+    const holidayName = holidayNameJa
+      ? (state.lang === 'ja' ? holidayNameJa : (HOLIDAY_NAMES_EN[holidayNameJa] || holidayNameJa))
+      : undefined;
+
     const el = document.createElement('div');
     let cls = 'calendar__cell';
-    if (past)     cls += ' calendar__cell--past';
-    if (today)    cls += ' calendar__cell--today';
-    if (selected) cls += ' calendar__cell--selected';
-    if (dow === 5) cls += ' calendar__cell--sat';
-    if (dow === 6) cls += ' calendar__cell--sun';
+    if (past)        cls += ' calendar__cell--past';
+    if (today)       cls += ' calendar__cell--today';
+    if (selected)    cls += ' calendar__cell--selected';
+    if (dow === 5)   cls += ' calendar__cell--sat';
+    if (dow === 6)   cls += ' calendar__cell--sun';
+    if (holidayName) cls += ' calendar__cell--holiday';
 
     el.className = cls;
     el.textContent = d;
     el.dataset.key = key;
+    if (holidayName) el.dataset.holiday = holidayName;
 
     if (!past) {
       el.addEventListener('click', () => toggleDate(key));
@@ -889,16 +928,25 @@ function toggleLang() {
 document.getElementById('prevMonth').addEventListener('click', () => {
   if (state.month === 0) { state.month = 11; state.year--; }
   else state.month--;
+  fetchHolidaysForYear(state.year); // fetch new year's holidays on demand (no-op if already fetched)
   renderCalendar();
 });
 
 document.getElementById('nextMonth').addEventListener('click', () => {
   if (state.month === 11) { state.month = 0; state.year++; }
   else state.month++;
+  fetchHolidaysForYear(state.year);
   renderCalendar();
 });
 
 document.getElementById('langToggle').addEventListener('click', toggleLang);
+
+document.getElementById('todayBtn').addEventListener('click', () => {
+  const now = new Date();
+  state.year  = now.getFullYear();
+  state.month = now.getMonth();
+  renderCalendar();
+});
 
 document.getElementById('slotSettingsToggle').addEventListener('click', () => {
   const toggle = document.getElementById('slotSettingsToggle');
@@ -921,5 +969,50 @@ document.getElementById('tzMoreSelect').addEventListener('change', (e) => {
   }
 });
 
+// ── Japanese holidays ──────────────────────────────────────────────────────────
+const HOLIDAY_CACHE_KEY_PREFIX = 'timebridge_holidays_';
+const HOLIDAY_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+async function fetchHolidaysForYear(year) {
+  if (state.holidayYearsFetched.has(year)) return;
+  state.holidayYearsFetched.add(year);
+
+  // Try localStorage cache first
+  const cacheKey = HOLIDAY_CACHE_KEY_PREFIX + year;
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const { data, ts } = JSON.parse(cached);
+      if (data && Date.now() - ts < HOLIDAY_CACHE_TTL_MS) {
+        Object.assign(state.holidays, data);
+        renderCalendar();
+        return;
+      }
+    }
+  } catch (_) { /* localStorage unavailable or corrupt — ignore */ }
+
+  // Fetch from API (Japanese names — EN translation handled via static map)
+  try {
+    const res = await fetch(`https://holidays-jp.github.io/api/v1/${year}/date.json`);
+    if (!res.ok) return;
+    const data = await res.json();
+    Object.assign(state.holidays, data);
+    // Persist to cache
+    try {
+      localStorage.setItem(cacheKey, JSON.stringify({ data, ts: Date.now() }));
+    } catch (_) { /* storage quota — ignore */ }
+    renderCalendar();
+  } catch (_) { /* offline or network error — calendar works without holidays */ }
+}
+
+async function initHolidays() {
+  const thisYear = new Date().getFullYear();
+  // Await current year so holidays are visible on first paint if cached
+  await fetchHolidaysForYear(thisYear);
+  // Fire-and-forget next year
+  fetchHolidaysForYear(thisYear + 1);
+}
+
 // ── Boot ───────────────────────────────────────────────────────────────────────
 render();
+initHolidays();

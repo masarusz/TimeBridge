@@ -28,9 +28,15 @@
       <!-- Calendar -->
       <div class="calendar">
         <div class="calendar__nav">
-          <button class="calendar__nav-btn" id="prevMonth" aria-label="Previous month">&#8249;</button>
-          <span class="calendar__title" id="calendarTitle"></span>
-          <button class="calendar__nav-btn" id="nextMonth" aria-label="Next month">&#8250;</button>
+          <div class="calendar__nav-left"></div>
+          <div class="calendar__nav-center">
+            <button class="calendar__nav-btn" id="prevMonth" aria-label="Previous month">&#8249;</button>
+            <span class="calendar__title" id="calendarTitle"></span>
+            <button class="calendar__nav-btn" id="nextMonth" aria-label="Next month">&#8250;</button>
+          </div>
+          <div class="calendar__nav-right">
+            <button class="calendar__today-btn" id="todayBtn">今日</button>
+          </div>
         </div>
         <div class="calendar__grid" id="calendarGrid"></div>
       </div>

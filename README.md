@@ -7,7 +7,7 @@ Select dates and time slots, add timezones, and copy a ready-to-send message —
 
 ## Features
 
-- **Calendar date picker** — click to select one or more dates
+- **Calendar date picker** — click to select one or more dates; Japanese public holidays highlighted in red with name tooltip
 - **Flexible time slots** — Morning / Afternoon / All Day presets (customisable) plus unlimited custom time ranges
 - **Multi-timezone support** — presets for Japan, India, UK, US Eastern, US Central, US Pacific; 40+ additional zones available
 - **DST-aware** — all timezone conversions use IANA timezone data via the browser's native `Intl` API; daylight saving time is handled automatically for every date
@@ -90,6 +90,19 @@ i18n.js      # Japanese / English string maps
 ---
 
 ## Change Log
+
+### v1.0.3 — 2026-05-25
+- Feature: "Today / 今日" button in the calendar nav — jumps back to the current month; disabled (greyed out) when already on the current month
+- Fix: Holiday tooltip now appears instantly using a CSS `::after` pseudo-element instead of the native `title` attribute (which has an OS-level ~1 s delay)
+- Fix: Holiday tooltip text is now shown in English when the UI is in English mode (static built-in translation map — no extra API call)
+- Fix: Past weekends and past holidays are now greyed out to match past weekdays, instead of retaining their red/blue colour
+- Fix: Japanese holiday display was broken after a failed attempt to fetch an `/en/` API endpoint; reverted to the single reliable JA endpoint with client-side EN translation
+
+### v1.0.2 — 2026-05-25
+- Feature: Japanese public holidays are now highlighted in red on the calendar
+- Hover over a highlighted date to see the holiday name (browser tooltip via `title` attribute)
+- Holidays fetched from `holidays-jp.github.io/api/v1/{year}/date.json` (current year + next year loaded on startup; additional years fetched on demand when navigating the calendar)
+- API responses are cached in `localStorage` for 30 days — works offline after first load; calendar gracefully degrades if the request fails
 
 ### v1.0.1 — 2026-05-25
 - Fix: All Day, Morning, and Afternoon preset slots are now mutually exclusive with Custom time ranges — adding a Custom clears all presets and disables them; removing the last Custom re-enables presets
