@@ -305,6 +305,20 @@ select { font-family: inherit; }
   cursor: not-allowed;
 }
 
+.slot-custom-more {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 0;
+  cursor: pointer;
+  text-align: left;
+  opacity: .8;
+  transition: opacity .12s;
+}
+.slot-custom-more:hover { opacity: 1; text-decoration: underline; }
+
 .custom-slot {
   margin-top: 8px;
   display: flex;

@@ -91,6 +91,11 @@ i18n.js      # Japanese / English string maps
 
 ## Change Log
 
+### v1.0.1 — 2026-05-25
+- Fix: All Day, Morning, and Afternoon preset slots are now mutually exclusive with Custom time ranges — adding a Custom clears all presets and disables them; removing the last Custom re-enables presets
+- Fix: Morning + Afternoon auto-upgrade to All Day is skipped when Custom slots exist
+- UI: `+ Custom` button moves below the last custom row as `+ Add another time range` once the first custom slot is added
+
 ### v1.0.0 — 2026-05-25
 - Initial release
 - Calendar date picker with Morning / Afternoon / All Day / Custom time slots

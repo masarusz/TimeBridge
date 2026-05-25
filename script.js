@@ -549,11 +549,14 @@ function renderSlots() {
     const btnRow = document.createElement('div');
     btnRow.className = 'slot-row__btns';
 
-    // AM — show label + current time hint
+    // Presets (AM / PM / AllDay) are mutually exclusive with Custom slots
+    const blockedByCustom = slots.customs.length > 0;
+
+    // AM
     const amTimes = state.slotTimes.am;
     const amBtn = makeSlotBtn(
       `${t('slotAM')}  ${amTimes.start}~${amTimes.end}`,
-      slots.am, slots.allday, () => toggleSlot(key, SLOT_AM)
+      slots.am, slots.allday || blockedByCustom, () => toggleSlot(key, SLOT_AM)
     );
     btnRow.appendChild(amBtn);
 
@@ -561,7 +564,7 @@ function renderSlots() {
     const pmTimes = state.slotTimes.pm;
     const pmBtn = makeSlotBtn(
       `${t('slotPM')}  ${pmTimes.start}~${pmTimes.end}`,
-      slots.pm, slots.allday, () => toggleSlot(key, SLOT_PM)
+      slots.pm, slots.allday || blockedByCustom, () => toggleSlot(key, SLOT_PM)
     );
     btnRow.appendChild(pmBtn);
 
@@ -569,22 +572,33 @@ function renderSlots() {
     const allTimes = state.slotTimes.allday;
     const allBtn = makeSlotBtn(
       `${t('slotAllDay')}  ${allTimes.start}~${allTimes.end}`,
-      slots.allday, false, () => toggleSlot(key, SLOT_ALLDAY)
+      slots.allday, blockedByCustom, () => toggleSlot(key, SLOT_ALLDAY)
     );
     btnRow.appendChild(allBtn);
 
-    // Custom add
-    const customAddBtn = document.createElement('button');
-    customAddBtn.className = 'slot-btn';
-    customAddBtn.textContent = t('slotCustom');
-    customAddBtn.addEventListener('click', () => addCustomSlot(key));
-    btnRow.appendChild(customAddBtn);
+    // + Custom button: visible only when no custom slots exist yet
+    if (slots.customs.length === 0) {
+      const customAddBtn = document.createElement('button');
+      customAddBtn.className = 'slot-btn';
+      customAddBtn.textContent = t('slotCustom');
+      customAddBtn.addEventListener('click', () => addCustomSlot(key));
+      btnRow.appendChild(customAddBtn);
+    }
 
     row.appendChild(btnRow);
 
-    // Custom slots
+    // Custom slot rows
     for (const c of slots.customs) {
       row.appendChild(makeCustomSlotRow(key, c));
+    }
+
+    // "+ Add another time range" appears below last custom row
+    if (slots.customs.length > 0) {
+      const moreBtn = document.createElement('button');
+      moreBtn.className = 'slot-custom-more';
+      moreBtn.textContent = t('slotCustomMore');
+      moreBtn.addEventListener('click', () => addCustomSlot(key));
+      row.appendChild(moreBtn);
     }
 
     list.appendChild(row);
@@ -785,15 +799,18 @@ function toggleSlot(key, slotType) {
     slots.allday = !slots.allday;
     if (slots.allday) { slots.am = false; slots.pm = false; }
   } else if (slotType === SLOT_AM) {
+    if (slots.customs.length > 0) return;
     slots.am = !slots.am;
     if (slots.am) slots.allday = false;
   } else if (slotType === SLOT_PM) {
+    if (slots.customs.length > 0) return;
     slots.pm = !slots.pm;
     if (slots.pm) slots.allday = false;
   }
 
   // Auto-convert: 午前 + 午後 selected together → upgrade to 終日
-  if (slots.am && slots.pm) {
+  // Skip if customs exist — 終日 is blocked when custom slots are present
+  if (slots.am && slots.pm && slots.customs.length === 0) {
     slots.allday = true;
     slots.am = false;
     slots.pm = false;
@@ -807,6 +824,10 @@ function addCustomSlot(key) {
   const slots = state.selectedDates.get(key);
   if (!slots) return;
   slots.customs.push({ id: ++customIdCounter, start: '10:00', end: '11:00' });
+  // Presets conflict with custom slots — deselect all of them
+  slots.am = false;
+  slots.pm = false;
+  slots.allday = false;
   renderSlots();
   renderOutput();
 }
