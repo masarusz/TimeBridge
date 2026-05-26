@@ -456,6 +456,8 @@ function renderI18n() {
   document.documentElement.lang = state.lang === 'ja' ? 'ja' : 'en';
   document.getElementById('langToggle').textContent = t('langToggle');
   document.getElementById('todayBtn').textContent = t('todayBtn');
+  const hintEl = document.getElementById('outputSelectHint');
+  if (!hintEl.hidden) hintEl.textContent = t('selectHint');
   document.getElementById('tzTitle').textContent = t('timezonesTitle');
   document.getElementById('copyBtn').textContent = t('copyBtn');
   document.getElementById('resetBtn').textContent = t('resetBtn');
@@ -797,17 +799,28 @@ function renderTzMoreSelect() {
 // ── Output ─────────────────────────────────────────────────────────────────────
 function renderOutput() {
   const text = generateOutput();
-  const textEl = document.getElementById('outputText');
+  const textEl  = document.getElementById('outputText');
   const emptyEl = document.getElementById('outputEmpty');
+  const hintEl  = document.getElementById('outputSelectHint');
 
   if (!text || state.selectedDates.size === 0) {
     textEl.style.display = 'none';
+    hintEl.hidden = true;
     emptyEl.textContent = t('outputEmpty');
     emptyEl.style.display = '';
   } else {
+    const isFirstContent = textEl.style.display === 'none' || textEl.textContent === '';
     emptyEl.style.display = 'none';
     textEl.textContent = text;
     textEl.style.display = '';
+    hintEl.textContent = t('selectHint');
+    hintEl.hidden = false;
+
+    // On mobile, scroll to output panel the first time content appears
+    if (isFirstContent && window.innerWidth <= 768) {
+      document.querySelector('.panel--right')
+        .scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }
 
@@ -912,6 +925,7 @@ function handleCopy() {
 
 // ── Reset ──────────────────────────────────────────────────────────────────────
 function handleReset() {
+  if (!confirm(t('resetConfirm'))) return;
   state.selectedDates = new Map();
   renderCalendar();
   renderSlots();
@@ -957,6 +971,15 @@ document.getElementById('slotSettingsToggle').addEventListener('click', () => {
 });
 document.getElementById('copyBtn').addEventListener('click', handleCopy);
 document.getElementById('resetBtn').addEventListener('click', handleReset);
+document.getElementById('outputText').addEventListener('click', () => {
+  const el = document.getElementById('outputText');
+  if (!el.textContent) return;
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+});
 document.getElementById('headerMessage').addEventListener('input', (e) => {
   state.headerTexts[state.lang] = e.target.value;
   renderOutput();

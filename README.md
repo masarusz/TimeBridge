@@ -91,6 +91,15 @@ i18n.js      # Japanese / English string maps
 
 ## Change Log
 
+### v1.0.5 — 2026-05-26
+- Fix: Saturday now displays in blue and Sunday in red, matching Japanese calendar convention (were previously swapped)
+- Feature: emoji favicon (🌉) shown in browser tab
+- Feature: click the output text to instantly select all — paste-ready without triple-click
+- Feature: Reset button now asks for confirmation before clearing all selections
+- Feature: on mobile, page auto-scrolls to the output panel the first time a result is generated
+- Fix: removed dead CSS class `.tz-preset-btn--hidden`
+- Fix: removed duplicate `.calendar__nav-right` CSS rule
+
 ### v1.0.4 — 2026-05-26
 - Fix: custom time slot start time now capped at 23:00 — prevents a zero-duration 23:30~23:30 slot
 - Fix: removed duplicate `filterToOptions` call in slot settings (fired twice per change)
