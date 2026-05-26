@@ -211,8 +211,8 @@ function convertSlot(dateKey, startStr, endStr, targetIana) {
   const startUtc = toUtcFromIana(y, m, d, sh, sm, 'Asia/Tokyo');
   const endUtc   = toUtcFromIana(y, m, d, eh, em, 'Asia/Tokyo');
 
-  const startLocal = utcToIana(startUtc, targetIana);
-  const endLocal   = utcToIana(endUtc,   targetIana);
+  const startLocal = utcToIana(startUtc);
+  const endLocal   = utcToIana(endUtc);
 
   return { startLocal, endLocal };
 }
@@ -227,7 +227,7 @@ function toUtcFromIana(y, mo, d, h, mi, iana) {
   return approxUtc - offset * 60000;
 }
 
-function utcToIana(utcMs, iana) {
+function utcToIana(utcMs) {
   return new Date(utcMs);
 }
 
@@ -432,9 +432,6 @@ function renderSlotSettings() {
     });
     filterToOptions(toSel, state.slotTimes[def.key].start);
     container.appendChild(toSel);
-
-    // Keep reference so fromSel onChange can update toSel
-    fromSel.addEventListener('change', () => filterToOptions(toSel, fromSel.value));
   }
 }
 
@@ -668,9 +665,13 @@ function makeCustomSlotRow(dateKey, c) {
     c.start = val;
     // If start >= end, push end forward by 30min
     if (timeStrToMinutes(c.start) >= timeStrToMinutes(c.end)) {
-      c.end = minutesToTimeStr(Math.min(timeStrToMinutes(c.start) + 30, 23 * 60 + 30));
+      c.end = minutesToTimeStr(timeStrToMinutes(c.start) + 30);
     }
     renderOutput();
+  });
+  // Disable 23:30 as a start time — no valid end time exists after it
+  Array.from(fromSel.options).forEach(opt => {
+    if (timeStrToMinutes(opt.value) >= 23 * 60 + 30) opt.disabled = true;
   });
   row.appendChild(fromSel);
 
@@ -780,7 +781,6 @@ function renderTzMoreSelect() {
   while (sel.options.length > 1) sel.remove(1);
 
   const allActive = new Set(state.activeTzKeys);
-  const presetKeys = new Set(TZ_PRESETS.map(z => z.key));
 
   TZ_EXTRA
     .filter(z => !allActive.has(z.key))

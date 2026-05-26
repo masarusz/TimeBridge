@@ -9,7 +9,7 @@ Select dates and time slots, add timezones, and copy a ready-to-send message —
 
 - **Calendar date picker** — click to select one or more dates; Japanese public holidays highlighted in red with name tooltip
 - **Flexible time slots** — Morning / Afternoon / All Day presets (customisable) plus unlimited custom time ranges
-- **Multi-timezone support** — presets for Japan, India, UK, US Eastern, US Central, US Pacific; 40+ additional zones available
+- **Multi-timezone support** — presets for Japan, India, UK, US Eastern, US Central, US Pacific; 38 additional zones available
 - **DST-aware** — all timezone conversions use IANA timezone data via the browser's native `Intl` API; daylight saving time is handled automatically for every date
 - **Smart output** — single-timezone mode shows clean minimal text; multi-timezone mode adds inline conversions ordered by proximity to Japan
 - **Japanese / English toggle** — all UI labels and output text switch instantly; each language keeps its own independent header message
@@ -90,6 +90,13 @@ i18n.js      # Japanese / English string maps
 ---
 
 ## Change Log
+
+### v1.0.4 — 2026-05-26
+- Fix: custom time slot start time now capped at 23:00 — prevents a zero-duration 23:30~23:30 slot
+- Fix: removed duplicate `filterToOptions` call in slot settings (fired twice per change)
+- Fix: removed unused `presetKeys` variable in `renderTzMoreSelect()`
+- Fix: removed unused `iana` parameter from `utcToIana()`
+- Docs: corrected additional timezone count from "40+" to "38" in README
 
 ### v1.0.3 — 2026-05-25
 - Feature: "Today / 今日" button in the calendar nav — jumps back to the current month; disabled (greyed out) when already on the current month
