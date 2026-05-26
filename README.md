@@ -91,6 +91,9 @@ i18n.js      # Japanese / English string maps
 
 ## Change Log
 
+### v1.0.6 — 2026-05-26
+- Add copyright footer linking to author's GitHub profile
+
 ### v1.0.5 — 2026-05-26
 - Fix: Saturday now displays in blue and Sunday in red, matching Japanese calendar convention (were previously swapped)
 - Feature: emoji favicon (🌉) shown in browser tab

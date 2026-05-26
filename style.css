@@ -706,6 +706,26 @@ select { font-family: inherit; }
 }
 
 /* ============================================================
+   Footer
+   ============================================================ */
+.app-footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border);
+  margin-top: 8px;
+}
+.app-footer a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+.app-footer a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* ============================================================
    Mobile
    ============================================================ */
 @media (max-width: 768px) {
