@@ -565,6 +565,7 @@ function renderSlots() {
     const slots = state.selectedDates.get(key);
     const row = document.createElement('div');
     row.className = 'slot-row';
+    row.dataset.key = key;
 
     // Header
     const header = document.createElement('div');
@@ -826,14 +827,23 @@ function renderOutput() {
 
 // ── State mutations ────────────────────────────────────────────────────────────
 function toggleDate(key) {
-  if (state.selectedDates.has(key)) {
-    state.selectedDates.delete(key);
-  } else {
+  const isAdding = !state.selectedDates.has(key);
+  if (isAdding) {
     state.selectedDates.set(key, { am: false, pm: false, allday: false, customs: [] });
+  } else {
+    state.selectedDates.delete(key);
   }
   renderCalendar();
   renderSlots();
   renderOutput();
+
+  // On mobile, scroll to the time slot buttons for the tapped date
+  if (isAdding && window.innerWidth <= 768) {
+    requestAnimationFrame(() => {
+      const slotRow = document.querySelector(`.slot-row[data-key="${key}"]`);
+      if (slotRow) slotRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  }
 }
 
 function removeDate(key) {
