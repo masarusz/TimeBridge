@@ -3,15 +3,18 @@
 A scheduling message generator for international teams.  
 Select dates and time slots, add timezones, and copy a ready-to-send message — no sign-up, no server, no build step.
 
+🌐 **Live:** https://masarusz.github.io/TimeBridge
+
 ---
 
 ## Features
 
-- **Calendar date picker** — click to select one or more dates; Japanese public holidays highlighted in red with name tooltip
+- **Calendar date picker** — click to select one or more dates; Japanese public holidays highlighted in red with name tooltip (Japanese and English); Today button jumps back to the current month
 - **Flexible time slots** — Morning / Afternoon / All Day presets (customisable) plus unlimited custom time ranges
 - **Multi-timezone support** — presets for Japan, India, UK, US Eastern, US Central, US Pacific; 38 additional zones available
 - **DST-aware** — all timezone conversions use IANA timezone data via the browser's native `Intl` API; daylight saving time is handled automatically for every date
 - **Smart output** — single-timezone mode shows clean minimal text; multi-timezone mode adds inline conversions ordered by proximity to Japan
+- **Click to select** — click the output text to instantly select all, ready to paste
 - **Japanese / English toggle** — all UI labels and output text switch instantly; each language keeps its own independent header message
 - **Copy to clipboard** — one click copies the full formatted message
 - **Responsive** — works on desktop and mobile
@@ -20,7 +23,7 @@ Select dates and time slots, add timezones, and copy a ready-to-send message —
 
 ## Usage
 
-1. Open `index.html` in any modern browser (Chrome, Firefox, Safari, Edge)
+1. Visit **https://masarusz.github.io/TimeBridge** (or open `index.html` locally)
 2. Click dates on the calendar
 3. Select time slots (Morning / Afternoon / All Day / Custom)
 4. Add timezones as needed from the panel below the calendar
@@ -68,6 +71,7 @@ Would any of the following schedule work for you?
 
 - Pure HTML / CSS / JavaScript — no framework, no build tool, no dependencies
 - Timezone conversion uses `Intl.DateTimeFormat` with full IANA timezone identifiers
+- Japanese public holidays fetched from `holidays-jp.github.io/api/v1/{year}/date.json`; cached in `localStorage` for 30 days — works offline after first load; calendar degrades gracefully if the request fails
 - Works offline after the first load
 
 ---
@@ -91,6 +95,9 @@ i18n.js      # Japanese / English string maps
 
 ## Change Log
 
+### v1.0.7 — 2026-05-26
+- Remove mobile auto-scroll (caused unexpected jumps on iOS Safari)
+
 ### v1.0.6 — 2026-05-26
 - Add copyright footer linking to author's GitHub profile
 
@@ -99,7 +106,6 @@ i18n.js      # Japanese / English string maps
 - Feature: emoji favicon (🌉) shown in browser tab
 - Feature: click the output text to instantly select all — paste-ready without triple-click
 - Feature: Reset button now asks for confirmation before clearing all selections
-- Feature: on mobile, page auto-scrolls to the output panel the first time a result is generated
 - Fix: removed dead CSS class `.tz-preset-btn--hidden`
 - Fix: removed duplicate `.calendar__nav-right` CSS rule
 
@@ -112,16 +118,15 @@ i18n.js      # Japanese / English string maps
 
 ### v1.0.3 — 2026-05-25
 - Feature: "Today / 今日" button in the calendar nav — jumps back to the current month; disabled (greyed out) when already on the current month
-- Fix: Holiday tooltip now appears instantly using a CSS `::after` pseudo-element instead of the native `title` attribute (which has an OS-level ~1 s delay)
-- Fix: Holiday tooltip text is now shown in English when the UI is in English mode (static built-in translation map — no extra API call)
-- Fix: Past weekends and past holidays are now greyed out to match past weekdays, instead of retaining their red/blue colour
+- Fix: holiday tooltip now appears instantly using a CSS `::after` pseudo-element instead of the native `title` attribute (which has an OS-level ~1 s delay)
+- Fix: holiday tooltip text is now shown in English when the UI is in English mode (static built-in translation map — no extra API call)
+- Fix: past weekends and past holidays are now greyed out to match past weekdays, instead of retaining their red/blue colour
 - Fix: Japanese holiday display was broken after a failed attempt to fetch an `/en/` API endpoint; reverted to the single reliable JA endpoint with client-side EN translation
 
 ### v1.0.2 — 2026-05-25
-- Feature: Japanese public holidays are now highlighted in red on the calendar
-- Hover over a highlighted date to see the holiday name (browser tooltip via `title` attribute)
+- Feature: Japanese public holidays highlighted in red on the calendar with hover tooltip
 - Holidays fetched from `holidays-jp.github.io/api/v1/{year}/date.json` (current year + next year loaded on startup; additional years fetched on demand when navigating the calendar)
-- API responses are cached in `localStorage` for 30 days — works offline after first load; calendar gracefully degrades if the request fails
+- API responses cached in `localStorage` for 30 days — calendar degrades gracefully if offline or request fails
 
 ### v1.0.1 — 2026-05-25
 - Fix: All Day, Morning, and Afternoon preset slots are now mutually exclusive with Custom time ranges — adding a Custom clears all presets and disables them; removing the last Custom re-enables presets
@@ -134,7 +139,7 @@ i18n.js      # Japanese / English string maps
 - Customisable default time ranges for preset slots
 - Multi-timezone support with DST-aware conversion via `Intl` API
 - Preset zones: Japan, India, UK, US Eastern, US Central, US Pacific
-- 40+ additional zones available via dropdown
+- 38 additional zones available via dropdown
 - Timezones auto-ordered by proximity to Japan
 - Single-timezone mode (clean output) and multi-timezone mode (inline conversions)
 - Japanese / English language toggle with per-language header text
