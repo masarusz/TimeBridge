@@ -810,40 +810,24 @@ function renderOutput() {
     emptyEl.textContent = t('outputEmpty');
     emptyEl.style.display = '';
   } else {
-    const isFirstContent = textEl.style.display === 'none' || textEl.textContent === '';
     emptyEl.style.display = 'none';
     textEl.textContent = text;
     textEl.style.display = '';
     hintEl.textContent = t('selectHint');
     hintEl.hidden = false;
-
-    // On mobile, scroll to output panel the first time content appears
-    if (isFirstContent && window.innerWidth <= 768) {
-      document.querySelector('.panel--right')
-        .scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
   }
 }
 
 // ── State mutations ────────────────────────────────────────────────────────────
 function toggleDate(key) {
-  const isAdding = !state.selectedDates.has(key);
-  if (isAdding) {
-    state.selectedDates.set(key, { am: false, pm: false, allday: false, customs: [] });
-  } else {
+  if (state.selectedDates.has(key)) {
     state.selectedDates.delete(key);
+  } else {
+    state.selectedDates.set(key, { am: false, pm: false, allday: false, customs: [] });
   }
   renderCalendar();
   renderSlots();
   renderOutput();
-
-  // On mobile, scroll to the time slot buttons for the tapped date
-  if (isAdding && window.innerWidth <= 768) {
-    requestAnimationFrame(() => {
-      const slotRow = document.querySelector(`.slot-row[data-key="${key}"]`);
-      if (slotRow) slotRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    });
-  }
 }
 
 function removeDate(key) {
