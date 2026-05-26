@@ -55,6 +55,7 @@ Would any of the following schedule work for you?
 以下の日程でご都合いかがでしょうか。
 ・6月11日（木） 10:00~12:00 日本 / 6:30~8:30 India / 2:00~4:00 UK / 6月10日 21:00~23:00 US Eastern
 　6月11日（木） 14:00~15:00 日本 / 10:30~11:30 India / 6:00~7:00 UK / 1:00~2:00 US Eastern
+・6月12日（金） 10:00~18:00 日本 / 6:30~14:30 India / 2:00~10:00 UK / 6月11日 21:00~5:00 US Eastern
 ```
 
 **English, multiple timezones:**
@@ -62,6 +63,7 @@ Would any of the following schedule work for you?
 Would any of the following schedule work for you?
 - Jun 11th (Thu) 10:00~12:00 Japan / 6:30~8:30 India / 2:00~4:00 UK / Jun 10 21:00~23:00 US Eastern
   Jun 11th (Thu) 14:00~15:00 Japan / 10:30~11:30 India / 6:00~7:00 UK / 1:00~2:00 US Eastern
+- Jun 12th (Fri) 10:00~18:00 Japan / 6:30~14:30 India / 2:00~10:00 UK / Jun 11 21:00~5:00 US Eastern
 ```
 
 ---
