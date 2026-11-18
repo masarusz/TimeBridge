@@ -105,6 +105,9 @@ i18n.js      # Japanese / English string maps
 
 ## Change Log
 
+### v1.0.8 — 2026-11-18
+- Replace the emoji favicon with the app icon: SVG favicon, 32×32 PNG fallback, and a 180×180 `apple-touch-icon` for iOS home screens
+
 ### v1.0.7 — 2026-05-26
 - Remove mobile auto-scroll (caused unexpected jumps on iOS Safari)
 
