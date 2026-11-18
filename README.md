@@ -105,6 +105,9 @@ i18n.js      # Japanese / English string maps
 
 ## Change Log
 
+### v1.0.9 — 2026-11-18
+- Header: replace the emoji next to the app name with the app icon (`icons/app-icon.svg`, rounded corners, decorative `alt=""`)
+
 ### v1.0.8 — 2026-11-18
 - Replace the emoji favicon with the app icon: SVG favicon, 32×32 PNG fallback, and a 180×180 `apple-touch-icon` for iOS home screens
 

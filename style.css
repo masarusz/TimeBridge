@@ -79,7 +79,7 @@ select { font-family: inherit; }
   gap: 8px;
 }
 
-.app-header__icon { font-size: 20px; }
+.app-header__icon { display: block; width: 22px; height: 22px; border-radius: 22%; }
 
 .app-header__name {
   font-size: 16px;
